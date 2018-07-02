@@ -1,0 +1,14 @@
+{
+  "name": "smartcontractexample",
+  "version": "1.0.0",
+  "description": "Smart contract example from https://blog.francium.tech/getting-started-with-ethereum-smart-contracts-and-solidity-6706131cab31",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Gerard de Jong",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "github:ethereum/web3.js"
+  }
+}

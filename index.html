@@ -1,0 +1,111 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Java Cloud Demo App 1</title>
+		<link href="https://v4-alpha.getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- including web3.js from node_modules -->
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+  </head>
+<body>
+    <div class="container">
+      <div class="header clearfix">
+        <h3 class="text-muted">Add Conference</h3>
+      </div>
+			<!-- to display the count of total conferences -->
+      <div id="info" class="alert alert-info"></div>
+			<!-- form to get name and city of conference to add -->
+      <form>
+        <div class="form-group">
+          <label for="title">Name</label>
+          <input type="text" class="form-control" id="name">
+        </div>
+        <div class="form-group">
+          <label for="language">City</label>
+          <input type="text" class="form-control" id="city">
+        </div>
+				<button type="submit" class="btn btn-primary" id="button">Add</button>
+      </form>
+    </div>
+  </body>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+    };
+		// sets a default account to communicate from the 10 accounts given by ganache-cli
+    web3.eth.defaultAccount = web3.eth.accounts[0];
+    // need to get the Abstract Binary Interface (ABI) from smart contract and paste
+    var conferenceContract = web3.eth.contract([
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_name",
+            "type": "string"
+          },
+          {
+            "name": "_city",
+            "type": "string"
+          }
+        ],
+        "name": "addConference",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "name": "conferences",
+        "outputs": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "type": "string"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "getConferenceCount",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ]);
+    // need to get the smart contract address and paste
+    var conferences = conferenceContract.at('0xab7c2367af974bec5c31ee34d742be300cc32686');
+		// access getBooksCount and update the html with the count
+    conferences.getConferenceCount(function(err, result){
+    if(!err)
+      $("#info").html("<strong>Conferences added:</strong> " + result);
+    });
+		
+		// access addConference on Add button click to set the conference details in the contract
+    $("#button").click(function() {
+      conferences.addConference($("#name").val(), $("#city").val());
+    });
+  </script>
+</html>
